@@ -3,7 +3,7 @@ Hardhat Configuration of the AEDU Smart Contracts.
 
 ## Introduction
 
-This repository contains the codebase for the fiat-backed stablecoin based on the United Arab Emirates dirhams. View our [whitepaper](https://github.com/AquaNow/aedu-smart-contracts/blob/main/whitepaper.pdf) for more information.
+This repository contains the codebase for the fiat-backed stablecoin based on the United Arab Emirates dirhams. View our [whitepaper](https://github.com/AquaNow/aedu-contracts/blob/main/whitepaper.pdf) for more information.
 
 ## Setup
 
