@@ -28,7 +28,7 @@ Run all tests:
 $ npm run test
 ```
 
-Run specific test:
+Run a specific test:
 
 ```
 $ npm run test ./test/<file name>
@@ -55,22 +55,22 @@ $ npx hardhat run scripts/deploy.js --network <network-name>
 This implementation uses 3 separate contracts: 1) a proxy contract (`AbstractTokenV1.sol`), 2) a token contract (`TokenV1.sol`), and 3) a minter management contract (`MasterMinter.sol`). By allowing for the deployment of a new implementation contract and updating the Proxy to reference it, the contract can be upgraded.
 
 ### TokenV1
-`TokenV1` offers a number of capabilities, which briefly are described below.
+`TokenV1` provides several features, outlined below:
 
 ### ERC20 compatible
-`TokenV1` implements the ERC20 interface.
+`TokenV1` adheres to the ERC20 interface.
 
 ### Pausable
-If a critical bug is detected or a significant key compromise occurs, the entire contract can be frozen. While the contract is paused, transfers are not permitted. The ability to pause the contract is governed by the pauser address.
+In the event of a critical bug or significant key compromise, the entire contract can be paused. Transfers are not allowed while the contract is paused. The pauser address controls the pause functionality.
 
 ### Upgradable
-The proxy contract can direct calls to a new implementation contract that has been deployed. The proxyOwner address regulates access to the upgrade feature. The proxyOwner address is the only entity authorized to modify the proxyOwner address.
+The proxy contract can redirect calls to a new, deployed implementation contract. The proxyOwner address governs access to the upgrade feature and is the only entity authorized to modify the proxyOwner address.
 
 ### Blacklist
-The contract can designate specific addresses to be blacklisted, thereby prohibiting them from receiving or transferring tokens. The ability to manage the blacklist feature is governed by the blacklister address.
+The contract can blacklist specific addresses, preventing them from receiving or transferring tokens. The blacklister address manages the blacklist feature.
 
 ### Minting/Burning
-Tokens can be minted or burned as required. The contract has the ability to accommodate multiple minters at the same time. The masterMinter address manages the list of minters and their respective minting capacities. The mint allowance is similar to the ERC20 allowance, which decreases as each minter creates new tokens. When the allowance runs too low, the masterMinter must increase it again.
+Tokens can be minted or burned as needed. The contract supports multiple minters simultaneously. The masterMinter address oversees the list of minters and their respective minting capacities. Mint allowances function similarly to ERC20 allowances, decreasing as minters create new tokens. The masterMinter must increase the allowance if it runs too low.
 
 ### Ownable
-The contract includes an Owner who has the authority to modify the owner, pauser, blacklister, or masterMinter addresses. However, the proxyOwner address cannot be altered by the owner.
+The contract includes an Owner with the authority to modify the owner, pauser, blacklister, or masterMinter addresses. However, the owner cannot alter the proxyOwner address.
