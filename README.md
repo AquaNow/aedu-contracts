@@ -1,10 +1,19 @@
 # AEDU Stablecoin: UAE Dirham-Backed Smart Contracts
 This repository holds the codebase for the AEDU Stablecoin, a fiat-backed stablecoin pegged to the United Arab Emirates dirham (AED). For more information, refer to our [whitepaper](https://github.com/AquaNow/aedu-contracts/blob/main/whitepaper.pdf).
 
+## Table of Contents
+- [Setup](#setup)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Contracts](#contracts)
+
 ## Setup
 
-Requirements:
+**Requirements**:
 - Node >= 16
+
+To get started, follow these steps:
+
 
 ```
 $ git clone git@github.com:AquaNow/aedu-smart-contracts.git
