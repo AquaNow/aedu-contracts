@@ -44,7 +44,7 @@ $ npm run coverage
 
 There are two contracts to be deployed: `TokenV1` and `MasterMinter`. First, supply variable values found in the `hardhat.config.js`. For the Goerli network, we used Alchemy for node access. Fill in the values for `ALCHEMY_API_KEY` and `GOERLI_PRIVATE_KEY`.
 
-To deploy Token Contract:
+To deploy the Token Contract:
 
 ```
 $ npx hardhat run scripts/deploy.js --network <network-name>
