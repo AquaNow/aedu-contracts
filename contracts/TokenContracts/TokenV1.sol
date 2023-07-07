@@ -31,13 +31,17 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
     mapping(address => bool) public isMinter;
     mapping(address => uint256) public minterAllowance; //Allowance set by approval
 
-
-
     event Mint(address indexed minter, address indexed to, uint256 amount);
     event Burn(address indexed burner, uint256 amount);
+
     event MinterConfigured(address indexed minter, uint256 minterAllowedAmount);
     event MinterRemoved(address indexed oldMinter);
     event MasterMinterChanged(address indexed newMasterMinter);
+    event TokenDecimalsSet(uint8 decimals);
+
+    event NewMasterMinter(address indexed NewMasterMinter);
+    event NewPauser(address indexed newPauser);
+    event NewBlacklister(address indexed NewBlacklister);
 
     modifier onlyMinter(){
         require(isMinter[msg.sender], "not a minter");
@@ -66,19 +70,11 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
         public initializer {
         Ownable.initialize(msg.sender);
         Pausable.initPaused();
-                require(
-            newMasterMinter != address(0),
-            "No zero addr"
-        );
-        require(
-            newPauser != address(0),
-            "No zero addr"
-        );
-        require(
-            newBlacklister != address(0),
-            "No zero addr"
-        );
-    
+
+        if (newMasterMinter == address(0)) revert NoZeroAddress(newMasterMinter);
+        if (newPauser == address(0)) revert NoZeroAddress(newPauser);
+        if (newBlacklister == address(0)) revert NoZeroAddress(newBlacklister);
+      
         _name = tokenName;
         _symbol = tokenSymbol;
         currency = tokenCurrency;
@@ -86,6 +82,11 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
         masterMinter = newMasterMinter;
         _pauser = newPauser;
         _blacklister = newBlacklister;
+
+        emit NewMasterMinter(newMasterMinter);
+        emit NewPauser(newPauser);
+        emit NewBlacklister(newBlacklister);
+        emit TokenDecimalsSet(tokenDecimals);
     }
 
     /**
@@ -187,8 +188,8 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
         uint256 value
     ) internal override {
 
-        require(owner != address(0), "No zero addr");
-        require(spender != address(0), "No zero addr");
+        if (owner == address(0)) revert NoZeroAddress(owner);
+        if (spender == address(0)) revert NoZeroAddress(spender);
         approvedAddresses[owner].push(spender);
         allowed[owner][spender] = value;
 
@@ -334,7 +335,7 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
     returns (bool)
     {
      
-        require(_to != address(0), "No zero addr");
+        if (_to == address(0)) revert NoZeroAddress(_to);
         require(_amount > 0, "must mint > 0");
         require(isMinter[_to], "unconfigured minter");
         require(minterAllowance[_to] >= _amount, "allowance exceeded");
@@ -347,10 +348,7 @@ contract TokenV1 is AbstractTokenV1, Ownable, Pausable, Blacklistable {
     }
 
     function updateMasterMinter(address _newMasterMinter) external onlyOwner {
-        require(
-            _newMasterMinter != address(0),
-            "No zero addr"
-        );
+        if (_newMasterMinter == address(0)) revert NoZeroAddress(_newMasterMinter);
         masterMinter = _newMasterMinter;
         emit MasterMinterChanged(masterMinter);
     }

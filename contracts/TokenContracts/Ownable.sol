@@ -13,6 +13,8 @@ contract Ownable is Initializable{
     address private _owner;
     //bool public initialized;
 
+    error NoZeroAddress(address value);
+
     /**
      * @dev Event to show ownership has been transferred
      * @param previousOwner representing the address of the previous owner
@@ -58,10 +60,7 @@ contract Ownable is Initializable{
      * @param newOwner The address to transfer ownership to.
      */
     function transferOwnership(address newOwner) external onlyOwner {
-        require(
-            newOwner != address(0),
-            "No zero addr"
-        );
+        if (newOwner == address(0)) revert NoZeroAddress(newOwner);
         emit OwnershipTransferred(_owner, newOwner);
         setOwner(newOwner);
     }

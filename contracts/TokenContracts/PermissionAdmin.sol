@@ -35,10 +35,7 @@ abstract contract PermissionAdmin is Ownable{
      * @notice sets the current permission admin
      */
     function setPermissionAdmin(address _newAdmin) external onlyOwner {
-        require(
-            _newAdmin != address(0), 
-            "No zero addr"
-        );
+        if (_newAdmin == address(0)) revert NoZeroAddress(_newAdmin);
         _permissionAdmin = _newAdmin;
         emit permissionAdminChanged(_permissionAdmin);
     }

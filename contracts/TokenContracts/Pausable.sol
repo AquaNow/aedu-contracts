@@ -45,11 +45,12 @@ contract Pausable is PermissionAdmin {
     /**
      * @dev called by the owner to pause, triggers stopped state
      */
-    function pause() external onlyPauser {        
-        require(paused == false, "already paused");
-        paused = true;
-        emit Pause();
-    }
+    function pause() external onlyPauser {       
+       require(!paused, "already paused");
+       paused = true;
+       emit Pause();
+   }
+
 
     function initPaused() public onlyInitializing {
         paused = false;
@@ -58,20 +59,18 @@ contract Pausable is PermissionAdmin {
      * @dev called by the owner to unpause, returns to normal state
      */
     function unpause() external onlyPauser {
-        require(paused == true, "already unpaused");
-        paused = false;
-        emit Unpause();
+       require(paused, "already unpaused");
+       paused = false;
+       emit Unpause();
     }
+
 
     /**
      * @dev update the pauser role
      */
     function updatePauser(address _newPauser) external onlyPermissionAdmin {
         //require(initialized, "Pausable: TokenV1 not initialized");
-        require(
-            _newPauser != address(0),
-            "No zero addr"
-        );
+        if (_newPauser == address(0)) revert NoZeroAddress(_newPauser);
         _pauser = _newPauser;
         emit pauserChanged(_pauser);
     }

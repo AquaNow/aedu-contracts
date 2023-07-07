@@ -30,7 +30,7 @@ contract Blacklistable is PermissionAdmin {
      * @param _account The address to check
      */
     modifier notBlacklisted(address _account) {
-        require(_blacklister != address(0), "No zero addr");
+        if (_blacklister == address(0)) revert NoZeroAddress(_blacklister);
         require(!blacklisted[_account], "account blacklisted");
         _;
     }
@@ -58,7 +58,7 @@ contract Blacklistable is PermissionAdmin {
     function blacklist(address _account) external onlyBlacklister {
         require(!blacklisted[_account], "already blacklisted");
         require(_account != _blacklister, "blacklister cannot blacklist itself");
-        require(_account != address(0), "No zero addr");
+        if (_account == address(0)) revert NoZeroAddress(_account);
         blacklisted[_account] = true;
         emit Blacklisted(_account);
     }
@@ -77,7 +77,8 @@ contract Blacklistable is PermissionAdmin {
         onlyPermissionAdmin
     {
         //require(initialized, "TokenV1 not initialized");
-        require(_newBlacklister != address(0), "No zero addr");
+        // require(_newBlacklister != address(0), "No zero addr");
+        if (_newBlacklister == address(0)) revert NoZeroAddress(_newBlacklister);
         _blacklister = _newBlacklister;
         emit BlacklisterChanged(_blacklister);
     }
