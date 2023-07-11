@@ -16,7 +16,6 @@ contract MintController is Controller {
      */
     MinterManagementInterface internal minterManager;
     mapping(address => uint256) internal minterAllowance;
-    mapping(address => uint256) internal minterCap;
 
     event MinterManagerSet(
         address indexed _oldMinterManager,
@@ -84,21 +83,29 @@ contract MintController is Controller {
         onlyController
         returns (bool)
     {
-        require(
-            controllers[msg.sender].length != 0,
-            "controller has no minters"
-        );
-        for (uint256 i; i < controllers[msg.sender].length; i++) {
+
+        uint256 len = controllers[msg.sender].length;
+
+        require(len != 0, "controller has no minters");
+        bool minterFoundAndRemoved = false;
+        for (uint256 i=0; i < len; i++) {
             if (controllers[msg.sender][i] == _minter) {
                 minterController[_minter] = address(0);
-                controllers[msg.sender][i] = controllers[msg.sender][controllers[msg.sender].length-1];
+                controllers[msg.sender][i] = controllers[msg.sender][len-1];
                 isMinter[_minter] = false;
                 controllers[msg.sender].pop();
                 emit MinterRemoved(msg.sender, _minter);
-                return minterManager.removeMinter(_minter);
+                minterFoundAndRemoved = true;
+                break;
             }
         }
-        return false;
+
+        if (minterFoundAndRemoved) {
+            return minterManager.removeMinter(_minter);
+        } else {
+            return false;
+        }
+       
     }
 
     /**
@@ -109,7 +116,7 @@ contract MintController is Controller {
         address _minter,
         uint256 _newAllowance   
     ) external onlyController returns (bool) {
-        require(_minter != address(0), "No zero addr");
+        if (_minter == address(0)) revert NoZeroAddress(_minter);
         require(controllers[msg.sender].length <= _maxNumOfMinters, "number of minters for controller exceeded");
         //total minted vs allowance
         if (minterController[_minter] == address(0)) {
